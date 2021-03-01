@@ -1,0 +1,11 @@
+[package]
+name = "vvvm-rs"
+version = "0.1.0"
+authors = ["Aljoscha Meyer <mail@aljoscha-meyer.de>"]
+edition = "2018"
+
+[dependencies]
+guvm-rs = { path = "../guvm-rs" }
+gc-immutable-collections = { path = "../gc-immutable-collections" }
+gc = "0.3.3"
+gc_derive = "0.3.2"
