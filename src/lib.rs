@@ -235,6 +235,14 @@ where
         V::Bool(b)
     }
 
+    pub fn float(x: f64) -> Self {
+        V::Float(PavoFloat(x))
+    }
+
+    pub fn int(n: i64) -> Self {
+        V::Int(n)
+    }
+
     pub fn string(s: &str) -> Self {
         unimplemented!()
     }

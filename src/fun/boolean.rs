@@ -1,11 +1,8 @@
-use guvm_rs::Value;
-
 use super::util::*;
-use super::CoreFailure;
 use crate::{V, ValueBaseOrdered, ValueBase};
 
 fun!(not(b) {
-    Ok(V::boo(as_bool(b)?))
+    Ok(V::boo(!as_bool(b)?))
 });
 
 fun!(and(b, c) {
