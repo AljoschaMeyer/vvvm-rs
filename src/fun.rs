@@ -15,6 +15,7 @@ mod value;
 mod order;
 mod boolean;
 mod float;
+mod int;
 
 #[derive(Finalize)]
 pub enum Fun<SS, SA, DS, DA, F, Fut>
@@ -452,6 +453,49 @@ pub enum SynchronousCoreFunction {
     FloatToBits,
     FloatFromBits,
 
+    IntSignum,
+    IntAdd,
+    IntSub,
+    IntMul,
+    IntDiv,
+    IntDivTrunc,
+    IntMod,
+    IntModTrunc,
+    IntNeg,
+    IntAbs,
+    IntPow,
+
+    IntSatAdd,
+    IntSatSub,
+    IntSatMul,
+    IntSatPow,
+
+    IntWrapAdd,
+    IntWrapSub,
+    IntWrapMul,
+    IntWrapDiv,
+    IntWrapDivTrunc,
+    IntWrapMod,
+    IntWrapModTrunc,
+    IntWrapNeg,
+    IntWrapAbs,
+    IntWrapPow,
+
+    IntBitCountOnes,
+    IntBitCountZeros,
+    IntBitLeadingOnes,
+    IntBitLeadingZeros,
+    IntBitTrailingOnes,
+    IntBitTrailingZeros,
+    IntBitRotateLeft,
+    IntBitRotateRight,
+    IntBitReverseBytes,
+    IntBitReverseBits,
+    IntBitShl,
+    IntBitShr,
+
+
+
 }
 use SynchronousCoreFunction::*;
 
@@ -541,6 +585,47 @@ impl<SS, SA, DS, DA, F, Fut> BuiltInSynchronousFunction<V<SS, SA, DS, DA, F, Fut
             FloatToBits => 1,
             FloatFromBits => 1,
 
+            IntSignum => 1,
+            IntAdd => 2,
+            IntSub => 2,
+            IntMul => 2,
+            IntDiv => 2,
+            IntDivTrunc => 2,
+            IntMod => 2,
+            IntModTrunc => 2,
+            IntNeg => 1,
+            IntAbs => 1,
+            IntPow => 2,
+
+            IntSatAdd => 2,
+            IntSatSub => 2,
+            IntSatMul => 2,
+            IntSatPow => 2,
+
+            IntWrapAdd => 2,
+            IntWrapSub => 2,
+            IntWrapMul => 2,
+            IntWrapDiv => 2,
+            IntWrapDivTrunc => 2,
+            IntWrapMod => 2,
+            IntWrapModTrunc => 2,
+            IntWrapNeg => 1,
+            IntWrapAbs => 1,
+            IntWrapPow => 2,
+
+            IntBitCountOnes => 1,
+            IntBitCountZeros => 1,
+            IntBitLeadingOnes => 1,
+            IntBitLeadingZeros => 1,
+            IntBitTrailingOnes => 1,
+            IntBitTrailingZeros => 1,
+            IntBitRotateLeft => 2,
+            IntBitRotateRight => 2,
+            IntBitReverseBytes => 1,
+            IntBitReverseBits => 1,
+            IntBitShl => 2,
+            IntBitShr => 2,
+
             _ => unimplemented!(),
         }
     }
@@ -627,6 +712,47 @@ impl<SS, SA, DS, DA, F, Fut> BuiltInSynchronousFunction<V<SS, SA, DS, DA, F, Fut
             FloatToBits => float::to_bits(&args[0]),
             FloatFromBits => float::from_bits(&args[0]),
 
+            IntSignum => int::signum(&args[0]),
+            IntAdd => int::add(&args[0], &args[1]),
+            IntSub => int::sub(&args[0], &args[1]),
+            IntMul => int::mul(&args[0], &args[1]),
+            IntDiv => int::div(&args[0], &args[1]),
+            IntDivTrunc => int::div_trunc(&args[0], &args[1]),
+            IntMod => int::mod_(&args[0], &args[1]),
+            IntModTrunc => int::mod_trunc(&args[0], &args[1]),
+            IntNeg => int::neg(&args[0]),
+            IntAbs => int::abs(&args[0]),
+            IntPow => int::pow(&args[0], &args[1]),
+
+            IntSatAdd => int::sat_add(&args[0], &args[1]),
+            IntSatSub => int::sat_sub(&args[0], &args[1]),
+            IntSatMul => int::sat_mul(&args[0], &args[1]),
+            IntSatPow => int::sat_pow(&args[0], &args[1]),
+
+            IntWrapAdd => int::wrap_add(&args[0], &args[1]),
+            IntWrapSub => int::wrap_sub(&args[0], &args[1]),
+            IntWrapMul => int::wrap_mul(&args[0], &args[1]),
+            IntWrapDiv => int::wrap_div(&args[0], &args[1]),
+            IntWrapDivTrunc => int::wrap_div_trunc(&args[0], &args[1]),
+            IntWrapMod => int::wrap_mod(&args[0], &args[1]),
+            IntWrapModTrunc => int::wrap_mod_trunc(&args[0], &args[1]),
+            IntWrapNeg => int::wrap_neg(&args[0]),
+            IntWrapAbs => int::wrap_abs(&args[0]),
+            IntWrapPow => int::wrap_pow(&args[0], &args[1]),
+
+            IntBitCountOnes => int::bit_count_ones(&args[0]),
+            IntBitCountZeros => int::bit_count_zeros(&args[0]),
+            IntBitLeadingOnes => int::bit_leading_ones(&args[0]),
+            IntBitLeadingZeros => int::bit_leading_zeros(&args[0]),
+            IntBitTrailingOnes => int::bit_trailing_ones(&args[0]),
+            IntBitTrailingZeros => int::bit_trailing_zeros(&args[0]),
+            IntBitRotateLeft => int::bit_rotate_left(&args[0], &args[1]),
+            IntBitRotateRight => int::bit_rotate_right(&args[0], &args[1]),
+            IntBitReverseBytes => int::bit_reverse_bytes(&args[0]),
+            IntBitReverseBits => int::bit_reverse_bits(&args[0]),
+            IntBitShl => int::bit_shl(&args[0], &args[1]),
+            IntBitShr => int::bit_shr(&args[0], &args[1]),
+
             _ => unimplemented!(),
         }
     }
@@ -667,4 +793,6 @@ pub enum CoreFailure<Val> {
     NotBool(Val),
     NotFloat(Val),
     NotInt(Val),
+    NotPositiveInt(Val),
+    NotNonZeroInt(Val),
 }

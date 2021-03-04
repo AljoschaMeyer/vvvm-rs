@@ -61,3 +61,35 @@ pub fn as_int<SS, SA, DS, DA, F, Fut>(v: &V<SS, SA, DS, DA, F, Fut>) -> Result<i
         _ => Err(CoreFailure::NotInt(v.clone())),
     }
 }
+
+pub fn as_positive_int<SS, SA, DS, DA, F, Fut>(v: &V<SS, SA, DS, DA, F, Fut>) -> Result<i64, CoreFailure<V<SS, SA, DS, DA, F, Fut>>> where
+    SS: ValueBaseOrdered,
+    DS: ValueBase,
+    SA: ValueBaseOrdered,
+    DA: ValueBase,
+    F: 'static,
+    Fut: 'static,
+{
+    let n = as_int(v)?;
+    if n >= 0 {
+        Ok(n)
+    } else {
+        Err(CoreFailure::NotPositiveInt(v.clone()))
+    }
+}
+
+pub fn as_non_zero_int<SS, SA, DS, DA, F, Fut>(v: &V<SS, SA, DS, DA, F, Fut>) -> Result<i64, CoreFailure<V<SS, SA, DS, DA, F, Fut>>> where
+    SS: ValueBaseOrdered,
+    DS: ValueBase,
+    SA: ValueBaseOrdered,
+    DA: ValueBase,
+    F: 'static,
+    Fut: 'static,
+{
+    let n = as_int(v)?;
+    if n != 0 {
+        Ok(n)
+    } else {
+        Err(CoreFailure::NotNonZeroInt(v.clone()))
+    }
+}
