@@ -1,5 +1,5 @@
 use super::util::*;
-use crate::{V, ValueBaseOrdered, ValueBase};
+use crate::{V, ValueBaseOrdered, ValueBase, CoreFailure};
 
 fun!(signum(n) {
     let n = as_int(n)?;
@@ -11,7 +11,7 @@ fun!(add(n, m) {
     let m = as_int(m)?;
     match n.checked_add(m) {
         Some(yay) => Ok(V::int(yay)),
-        None => Ok(V::err_nil()),
+        None => Err(CoreFailure::Overflow(n, m)),
     }
 });
 
@@ -20,7 +20,7 @@ fun!(sub(n, m) {
     let m = as_int(m)?;
     match n.checked_sub(m) {
         Some(yay) => Ok(V::int(yay)),
-        None => Ok(V::err_nil()),
+        None => Err(CoreFailure::Overflow(n, m)),
     }
 });
 
@@ -29,7 +29,7 @@ fun!(mul(n, m) {
     let m = as_int(m)?;
     match n.checked_add(m) {
         Some(yay) => Ok(V::int(yay)),
-        None => Ok(V::err_nil()),
+        None => Err(CoreFailure::Overflow(n, m)),
     }
 });
 
@@ -38,7 +38,7 @@ fun!(div(n, m) {
     let m = as_non_zero_int(m)?;
     match n.checked_div_euclid(m) {
         Some(yay) => Ok(V::int(yay)),
-        None => Ok(V::err_nil()),
+        None => Err(CoreFailure::Overflow(n, m)),
     }
 });
 
@@ -47,7 +47,7 @@ fun!(div_trunc(n, m) {
     let m = as_non_zero_int(m)?;
     match n.checked_div(m) {
         Some(yay) => Ok(V::int(yay)),
-        None => Ok(V::err_nil()),
+        None => Err(CoreFailure::Overflow(n, m)),
     }
 });
 
@@ -56,7 +56,7 @@ fun!(mod_(n, m) {
     let m = as_non_zero_int(m)?;
     match n.checked_rem_euclid(m) {
         Some(yay) => Ok(V::int(yay)),
-        None => Ok(V::err_nil()),
+        None => Err(CoreFailure::Overflow(n, m)),
     }
 });
 
@@ -65,7 +65,7 @@ fun!(mod_trunc(n, m) {
     let m = as_non_zero_int(m)?;
     match n.checked_rem(m) {
         Some(yay) => Ok(V::int(yay)),
-        None => Ok(V::err_nil()),
+        None => Err(CoreFailure::Overflow(n, m)),
     }
 });
 
@@ -74,7 +74,7 @@ fun!(neg(n) {
 
     match n.checked_neg() {
         Some(yay) => Ok(V::int(yay)),
-        None => Ok(V::err_nil()),
+        None => Err(CoreFailure::Overflow1),
     }
 });
 
@@ -83,11 +83,101 @@ fun!(abs(n) {
 
     match n.checked_abs() {
         Some(yay) => Ok(V::int(yay)),
-        None => Ok(V::err_nil()),
+        None => Err(CoreFailure::Overflow1),
     }
 });
 
 fun!(pow(n, m) {
+    let n = as_int(n)?;
+    let m = as_positive_int(m)?;
+    match n.checked_pow(m as u32) {
+        Some(yay) => Ok(V::int(yay)),
+        None => Err(CoreFailure::Overflow(n, m)),
+    }
+});
+
+fun!(check_add(n, m) {
+    let n = as_int(n)?;
+    let m = as_int(m)?;
+    match n.checked_add(m) {
+        Some(yay) => Ok(V::int(yay)),
+        None => Ok(V::err_nil()),
+    }
+});
+
+fun!(check_sub(n, m) {
+    let n = as_int(n)?;
+    let m = as_int(m)?;
+    match n.checked_sub(m) {
+        Some(yay) => Ok(V::int(yay)),
+        None => Ok(V::err_nil()),
+    }
+});
+
+fun!(check_mul(n, m) {
+    let n = as_int(n)?;
+    let m = as_int(m)?;
+    match n.checked_add(m) {
+        Some(yay) => Ok(V::int(yay)),
+        None => Ok(V::err_nil()),
+    }
+});
+
+fun!(check_div(n, m) {
+    let n = as_int(n)?;
+    let m = as_non_zero_int(m)?;
+    match n.checked_div_euclid(m) {
+        Some(yay) => Ok(V::int(yay)),
+        None => Ok(V::err_nil()),
+    }
+});
+
+fun!(check_div_trunc(n, m) {
+    let n = as_int(n)?;
+    let m = as_non_zero_int(m)?;
+    match n.checked_div(m) {
+        Some(yay) => Ok(V::int(yay)),
+        None => Ok(V::err_nil()),
+    }
+});
+
+fun!(check_mod_(n, m) {
+    let n = as_int(n)?;
+    let m = as_non_zero_int(m)?;
+    match n.checked_rem_euclid(m) {
+        Some(yay) => Ok(V::int(yay)),
+        None => Ok(V::err_nil()),
+    }
+});
+
+fun!(check_mod_trunc(n, m) {
+    let n = as_int(n)?;
+    let m = as_non_zero_int(m)?;
+    match n.checked_rem(m) {
+        Some(yay) => Ok(V::int(yay)),
+        None => Ok(V::err_nil()),
+    }
+});
+
+fun!(check_neg(n) {
+    let n = as_int(n)?;
+
+    match n.checked_neg() {
+        Some(yay) => Ok(V::int(yay)),
+        None => Ok(V::err_nil()),
+    }
+});
+
+fun!(check_abs(n) {
+    let n = as_int(n)?;
+
+    match n.checked_abs() {
+        Some(yay) => Ok(V::int(yay)),
+        None => Ok(V::err_nil()),
+    }
+});
+
+fun!(check_pow(n, m) {
     let n = as_int(n)?;
     let m = as_positive_int(m)?;
     match n.checked_pow(m as u32) {
